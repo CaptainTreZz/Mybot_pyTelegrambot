@@ -1,15 +1,17 @@
 import telebot
+from telebot.types import CallbackQuery
+
 from markups import *
-
-
 
 TOKEN = "5360346452:AAGPgZJDnCNwjDE_VLtNlIbQvz5S_AFFCgA"
 bot = telebot.TeleBot(TOKEN)
+
 
 @bot.message_handler(commands=['start'])
 def start(message):
     bot.send_message(message.from_user.id,
                      f"Приветсвую вас на наш тестовом боте", reply_markup=mainMenu())
+
 
 @bot.message_handler(content_types=['text'])
 def main_menu(message):
@@ -34,16 +36,20 @@ def catalog_menu(message):
     elif message.text == 'Товар5':
         bot.send_message(message.from_user.id, "Отлично!", reply_markup=choice_markup())
 
+
 @bot.message_handler(func=lambda message: True)
 def info_menu(message):
     bot.send_message(message.from_user.id, "Мы находимся в разработке поэтому инфы нет совсем....")
 
-""" Добавить покупку при нажатии кнопки inline режиме или показать инфу на товар."""
-# @bot.callback_query_handlers()
-# def buy(call):
-#     if call.data == 'buy':
-#         bot.answer_callback_query(call.id, 'Отлично товар в тестовой корзине')
-#     elif call.data == 'info':
-#         bot.answer_callback_query(call.id, 'Информация о товаре будет позже...')
+
+@bot.callback_query_handler(func=lambda call: True)
+def call_Buy(call):
+    if call.data == 'buy':
+        bot.send_message(call.message.chat.id, 'Отлично товар в тестовой корзине')
+        bot.answer_callback_query(call.id)
+    elif call.data == 'info':
+        bot.send_message(call.message.chat.id, 'Информация о товаре будет позже...')
+        bot.answer_callback_query(call.id)
+
 
 bot.polling(none_stop=True)
