@@ -9,3 +9,8 @@ cur = conn.cursor()
 def db_table_val(user_id: int, name: str, surname: str):
     cur.execute("INSERT INTO users (user_id, name, surname) VALUES (?, ?, ?)", (user_id, name, surname))
     conn.commit()
+
+
+def db_table_get(user_id: int, name: str, surname: str):
+    cur.execute("SELECT * FROM users")
+    conn.commit()
